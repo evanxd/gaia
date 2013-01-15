@@ -462,6 +462,17 @@ var Contacts = (function() {
     navigation.back();
   };
 
+  var handleDetailsBack = function() {
+    var hasParams = window.location.hash.split('?');
+    var params = hasParams.length > 1 ?
+      extractParams(hasParams[1]) : -1;
+
+    navigation.back();
+    if (params['send_message_from_iframe'] === '1') {
+      window.parent.postMessage({ 'type': 'iframe', 'message': 'back' }, '*');
+    }
+  }
+
   var handleCancel = function handleCancel() {
     //If in an activity, cancel it
     if (ActivityHandler.currentlyHandling) {
@@ -607,7 +618,7 @@ var Contacts = (function() {
           handler: contacts.Search.enterSearchMode
         }
       ],
-      '#details-back': handleBack, // Details
+      '#details-back': handleDetailsBack, // Details
       '#edit-contact-button': showEditContact,
       '#toggle-favorite': contacts.Details.toggleFavorite,
       '#contact-form button[data-field-type]': contacts.Form.onNewFieldClicked,

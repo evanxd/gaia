@@ -592,14 +592,16 @@ var Recents = {
   },
 
   viewOrCreate: function re_viewOrCreate(contactId, phoneNumber) {
-    var contactsIframe = document.getElementById('iframe-contacts');
+    var contactsDetailIframe = document.getElementById('iframe-contacts-detail');
     var src = '/contacts/index.html';
     if (contactId) {
       src += '#view-contact-details?id=' + contactId;
       src += '&tel=' + phoneNumber;
+      src += '&send_message_from_iframe=1';
+
       var timestamp = new Date().getTime();
-      contactsIframe.src = src + '&timestamp=' + timestamp;
-      window.location.hash = '#contacts-view';
+      contactsDetailIframe.src = src + '&timestamp=' + timestamp;
+      window.location.hash = '#contacts-detail-view'; 
     } else {
       this.newPhoneNumber = phoneNumber;
       this.addContactActionMenu.classList.add('visible');

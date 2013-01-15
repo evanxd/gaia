@@ -98,6 +98,18 @@ var CallHandler = (function callHandler() {
     });
   }
 
+  function handleIframeRequest(message) {
+    switch (message) {
+      case 'back':
+        var destination = window.location.hash;
+
+        if (destination === '#contacts-detail-view') {
+          window.location.hash = '#recents-view';
+        }
+        break;
+    }
+  }
+
   /* === Incoming and STK calls === */
   function newCall() {
     // We need to query mozTelephony a first time here
@@ -177,6 +189,8 @@ var CallHandler = (function callHandler() {
       handleNotificationRequest(data.number);
     } else if (data.type && data.type === 'recent') {
       handleRecentAddRequest(data.entry);
+    } else if (data.type && data.type === 'iframe') {
+      handleIframeRequest(data.message);
     }
   }
   window.addEventListener('message', handleMessage);
@@ -359,18 +373,13 @@ var NavbarManager = {
       // TODO Implement it with building blocks:
       // https://github.com/jcarpenter/Gaia-UI-Building-Blocks/blob/master/inprogress/tabs.css
       // https://github.com/jcarpenter/Gaia-UI-Building-Blocks/blob/master/inprogress/tabs.html
-      self.update();
+      self.update(event);
     });
   },
 
-  update: function nm_update() {
-    var recent = document.getElementById('option-recents');
-    var contacts = document.getElementById('option-contacts');
-    var keypad = document.getElementById('option-keypad');
-
-    recent.classList.remove('toolbar-option-selected');
-    contacts.classList.remove('toolbar-option-selected');
-    keypad.classList.remove('toolbar-option-selected');
+  update: function nm_update(event) {
+    var contactsDetailView = document.getElementById('contacts-detail-view');
+    var contactsView = document.getElementById('contacts-view');
 
     // XXX : Move this to whole activity approach, so far
     // we don't have time to do a deep modification of
@@ -385,26 +394,31 @@ var NavbarManager = {
     };
 
     var destination = window.location.hash;
+
+    if (destination !== '#contacts-detail-view') {
+      contactsDetailView.classList.add('toolbar-option-hide');
+      contactsView.classList.remove('toolbar-option-hide');
+    }
+
     switch (destination) {
       case '#recents-view':
         checkContactsTab();
         Recents.updateContactDetails();
-        recent.classList.add('toolbar-option-selected');
         Recents.load();
         Recents.updateLatestVisit();
         break;
       case '#contacts-view':
-        var frame = document.getElementById('iframe-contacts');
+        var frame = document.getElementById('iframe-contacts');        
         if (!frame.src) {
           frame.src = '/contacts/index.html';
         }
-
-        contacts.classList.add('toolbar-option-selected');
-        Recents.updateHighlighted();
         break;
+      case '#contacts-detail-view':
+        contactsView.classList.add('toolbar-option-hide');   
+        contactsDetailView.classList.remove('toolbar-option-hide'); 
+        break;        
       case '#keyboard-view':
         checkContactsTab();
-        keypad.classList.add('toolbar-option-selected');
         Recents.updateHighlighted();
         break;
     }

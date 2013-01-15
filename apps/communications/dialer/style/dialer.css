@@ -93,6 +93,10 @@ body.hidden *[data-l10n-id] {
   display: none;
 }
 
+.toolbar-option-hide {
+  display: none;
+}
+
 /* Making lazy loading look nice */
 #iframe-contacts,
 #recents-view.hidden [role="tabpanel"] {
@@ -101,8 +105,4 @@ body.hidden *[data-l10n-id] {
   background-repeat: repeat-x;
   background-position: 0 0, 0 5rem;
   background-size: 100% 5rem, 100% 0.3rem;
-}
-
-#recents-view.hidden [role="tabpanel"] section {
-  visibility: hidden;
 }
