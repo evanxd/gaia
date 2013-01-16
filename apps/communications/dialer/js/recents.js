@@ -592,7 +592,7 @@ var Recents = {
   },
 
   viewOrCreate: function re_viewOrCreate(contactId, phoneNumber) {
-    var contactsDetailIframe = document.getElementById('iframe-contacts-detail');
+    var contactsIframe = document.getElementById('iframe-contacts');
     var src = '/contacts/index.html';
     if (contactId) {
       src += '#view-contact-details?id=' + contactId;
@@ -600,8 +600,8 @@ var Recents = {
       src += '&send_message_from_iframe=1';
 
       var timestamp = new Date().getTime();
-      contactsDetailIframe.src = src + '&timestamp=' + timestamp;
-      window.location.hash = '#contacts-detail-view'; 
+      contactsIframe.src = src + '&timestamp=' + timestamp;
+      window.location.hash = '#contacts-view';
     } else {
       this.newPhoneNumber = phoneNumber;
       this.addContactActionMenu.classList.add('visible');

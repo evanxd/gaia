@@ -101,11 +101,10 @@ var CallHandler = (function callHandler() {
   function handleIframeRequest(message) {
     switch (message) {
       case 'back':
-        var destination = window.location.hash;
+        var frame = document.getElementById('iframe-contacts');
 
-        if (destination === '#contacts-detail-view') {
-          window.location.hash = '#recents-view';
-        }
+        window.location.hash = '#recents-view';
+        frame.src = '/contacts/index.html';
         break;
     }
   }
@@ -394,12 +393,6 @@ var NavbarManager = {
     };
 
     var destination = window.location.hash;
-
-    if (destination !== '#contacts-detail-view') {
-      contactsDetailView.classList.add('toolbar-option-hide');
-      contactsView.classList.remove('toolbar-option-hide');
-    }
-
     switch (destination) {
       case '#recents-view':
         checkContactsTab();
@@ -412,10 +405,6 @@ var NavbarManager = {
         if (!frame.src) {
           frame.src = '/contacts/index.html';
         }
-        break;
-      case '#contacts-detail-view':
-        contactsView.classList.add('toolbar-option-hide');   
-        contactsDetailView.classList.remove('toolbar-option-hide'); 
         break;        
       case '#keyboard-view':
         checkContactsTab();
