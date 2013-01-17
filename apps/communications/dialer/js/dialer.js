@@ -101,10 +101,9 @@ var CallHandler = (function callHandler() {
   function handleIframeRequest(message) {
     switch (message) {
       case 'back':
-        var frame = document.getElementById('iframe-contacts');
-
+        // disable the function of receiving the messages posted from iframe
+        window.frames['iframe-contacts'].window.history.pushState(null, null, '/contacts/index.html');
         window.location.hash = '#recents-view';
-        frame.src = '/contacts/index.html';
         break;
     }
   }
@@ -391,11 +390,10 @@ var NavbarManager = {
         contactsIframe.src = contactsIframe.src.substr(0, index);
       }
     };
-
+    
     var destination = window.location.hash;
     switch (destination) {
       case '#recents-view':
-        checkContactsTab();
         Recents.updateContactDetails();
         Recents.load();
         Recents.updateLatestVisit();
@@ -405,9 +403,9 @@ var NavbarManager = {
         if (!frame.src) {
           frame.src = '/contacts/index.html';
         }
-        break;        
+        Recents.updateLatestVisit();
+        break;
       case '#keyboard-view':
-        checkContactsTab();
         Recents.updateHighlighted();
         break;
     }

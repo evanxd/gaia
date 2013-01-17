@@ -595,12 +595,14 @@ var Recents = {
     var contactsIframe = document.getElementById('iframe-contacts');
     var src = '/contacts/index.html';
     if (contactId) {
+      var timestamp = new Date().getTime();
       src += '#view-contact-details?id=' + contactId;
       src += '&tel=' + phoneNumber;
+      // enable the function of receiving the messages posted from iframe
       src += '&send_message_from_iframe=1';
+      src += '&timestamp=' + timestamp;
 
-      var timestamp = new Date().getTime();
-      contactsIframe.src = src + '&timestamp=' + timestamp;
+      contactsIframe.src = src;
       window.location.hash = '#contacts-view';
     } else {
       this.newPhoneNumber = phoneNumber;
