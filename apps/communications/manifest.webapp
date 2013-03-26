@@ -105,7 +105,7 @@
         "type": "webcontacts/contact"
       },
       "disposition": "inline",
-      "href": "/contacts/index.html?update",
+      "href": "/contacts/update.html",
       "returnValue": true
     },
     "dial": {
