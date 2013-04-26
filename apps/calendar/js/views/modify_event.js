@@ -1,5 +1,6 @@
 Calendar.ns('Views').ModifyEvent = (function() {
 
+  const ADD_EVENT_PATH_PATTERN = /\/event\/add\//;
   var InputParser = Calendar.Utils.InputParser;
 
   function ModifyEvent(options) {
@@ -575,7 +576,10 @@ Calendar.ns('Views').ModifyEvent = (function() {
       settings.getValue(layout + 'AlarmDefault', next.bind(this));
 
       function next(err, value) {
-        if (!alarmMap[value] && !this.event.alarms.length) {
+        var currentPath = Calendar.App.router.currentPath;
+        var isAddEvent = currentPath.match(ADD_EVENT_PATH_PATTERN);
+
+        if (isAddEvent && !alarmMap[value] && !this.event.alarms.length) {
           alarms.push({
             layout: layout,
             trigger: value
