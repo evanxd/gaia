@@ -9,6 +9,7 @@ var GridManager = (function() {
   var DEVICE_HEIGHT = window.innerHeight;
   var SCALE_RATIO = window.innerWidth / BASE_WIDTH;
   var AVAILABLE_SPACE = DEVICE_HEIGHT - (BASE_HEIGHT * SCALE_RATIO);
+  var SPEED_DOWN_RATE = 0.3;
 
   // Check if there is space for another row of icons
   if (AVAILABLE_SPACE > BASE_HEIGHT / 5) {
@@ -219,7 +220,8 @@ var GridManager = (function() {
                 'translateX(' + (windowWidth + deltaX) + 'px)';
               current.MozTransform = 'translateX(' + deltaX + 'px)';
             } else {
-              startX = currentX;
+              var speedDown = SPEED_DOWN_RATE * deltaX;
+              current.MozTransform = 'translateX(' + speedDown + 'px)';
             }
           };
         } else if (currentPage === pages.length - 1) {
@@ -230,7 +232,8 @@ var GridManager = (function() {
                 'translateX(' + (-windowWidth + deltaX) + 'px)';
               current.MozTransform = 'translateX(' + deltaX + 'px)';
             } else {
-              startX = currentX;
+              var speedDown = SPEED_DOWN_RATE * deltaX;
+              current.MozTransform = 'translateX(' + speedDown + 'px)';
             }
           };
         } else {
