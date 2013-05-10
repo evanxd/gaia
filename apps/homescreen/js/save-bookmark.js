@@ -19,6 +19,7 @@ if (navigator.mozSetMessageHandler) {
             oncancelled: addBookmarkCancelled
           };
           BookmarkEditor.init(options);
+          BookmarkEditor.save();
           document.addEventListener('mozvisibilitychange', function changed() {
             if (document.mozHidden) {
               BookmarkEditor.close();
