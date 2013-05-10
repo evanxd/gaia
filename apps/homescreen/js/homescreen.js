@@ -80,18 +80,6 @@ const Homescreen = (function() {
     }
   });
 
-  window.addEventListener('message', function hs_onMessage(event) {
-    if (event.origin === origin) {
-      var message = event.data;
-      switch (message.type) {
-        case Message.Type.ADD_BOOKMARK:
-          var app = new Bookmark(message.data);
-          GridManager.install(app);
-          break;
-      }
-    }
-  });
-
   function setLocale() {
     // set the 'lang' and 'dir' attributes to <html> when the page is translated
     document.documentElement.lang = navigator.mozL10n.language.code;
