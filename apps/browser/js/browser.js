@@ -150,7 +150,7 @@ var Browser = {
     var domElements = [
       'tab-headers', 'top-sites', 'bookmarks', 'history',
       'top-sites-tab', 'bookmarks-tab', 'history-tab',
-      'tabs-list', 'settings-button', 'settings-done-button',
+      'tabs-list', 'settings', 'settings-button',
       'about-browser-button', 'clear-history-button', 'close-tab',
       'try-reloading', 'bookmark-menu-add', 'bookmark-menu-remove',
       'bookmark-menu-cancel', 'bookmark-menu-edit',
@@ -197,8 +197,6 @@ var Browser = {
      this.settingsButton.addEventListener('click',
        this.showSettingsScreen.bind(this));
      this.newTabButton.addEventListener('click', this.handleNewTab.bind(this));
-     this.settingsDoneButton.addEventListener('click',
-       this.showPageScreen.bind(this));
      this.aboutBrowserButton.addEventListener('click',
        this.showAboutPage.bind(this));
      this.clearHistoryButton.addEventListener('click',
@@ -1785,10 +1783,10 @@ var Browser = {
     return li;
   },
 
-  showSettingsScreen: function browser_showSettingsScreen() {
-    this.switchScreen(this.SETTINGS_SCREEN);
-    this.clearHistoryButton.disabled = false;
-    this.clearPrivateDataButton.disabled = false;
+  showSettingsScreen: function browser_showSettingsScreen(evt) {
+    evt.stopPropagation();
+    this.closeMenuWhenClickOutside(this.settings);
+    this.settings.classList.remove('hidden');
   },
 
   showAboutPage: function browser_showAboutPage() {
