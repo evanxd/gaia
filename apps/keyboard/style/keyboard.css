@@ -54,8 +54,9 @@ button::-moz-focus-inner {
 .keyboard-key {
   -moz-box-sizing: border-box;
   display: inline-block;
-  min-width: 2.6rem;
+  min-width: 2rem;
   padding: 0 0.1rem;
+  margin: 0 12px 0 12px;
   border: none;
   background: none;
 }
@@ -67,7 +68,7 @@ button::-moz-focus-inner {
   display: inline-block;
   position: relative;
   width: 100%;
-  height: 4.2rem;
+  height: 4rem;
   margin-bottom: 0.3rem;
   border: 0.1rem solid #1b1d1d;
   border-radius: 0.3rem;
