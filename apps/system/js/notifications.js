@@ -47,6 +47,7 @@ var NotificationScreen = {
   _containerWidth: null,
   _toasterTimeout: null,
   _toasterGD: null,
+  _isInitialized: false,
 
   lockscreenPreview: true,
   silent: false,
@@ -86,6 +87,12 @@ var NotificationScreen = {
     var self = this;
     SettingsListener.observe('notification.ringtone', '', function(value) {
       self._sound = value;
+    });
+
+    asyncStorage.getItem('notification.items',
+                         function getNotificationItems(items) {
+      self.addNotification(items);
+      self._isInitialized = true;
     });
   },
 
@@ -280,7 +287,7 @@ var NotificationScreen = {
     this.updateStatusBarIcon(true);
 
     // Notification toaster
-    if (this.lockscreenPreview || !LockScreen.locked) {
+    if ((this.lockscreenPreview || !LockScreen.locked) && this._isInitialized) {
       this.toaster.dataset.notificationID = detail.id;
 
       this.toaster.classList.add('displayed');
@@ -326,6 +333,8 @@ var NotificationScreen = {
         navigator.vibrate([200, 200, 200, 200]);
       }
     }
+
+    asyncStorage.setItem('notification.items', detail);
 
     return notificationNode;
   },
