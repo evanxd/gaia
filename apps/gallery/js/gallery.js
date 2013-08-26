@@ -1083,6 +1083,19 @@ function share(blobs) {
     }
   });
 
+  function launchApp() {
+    navigator.mozApps.getSelf().onsuccess = function(evt) {
+      var app = evt.target.result;
+      if (app !== null) {
+        app.launch();
+      }
+    };
+  }
+
+  a.onsuccess = function() {
+    launchApp();
+  };
+
   a.onerror = function(e) {
     if (a.error.name === 'NO_PROVIDER') {
       var msg = navigator.mozL10n.get('share-noprovider');
@@ -1091,6 +1104,7 @@ function share(blobs) {
     else {
       console.warn('share activity error:', a.error.name);
     }
+    launchApp();
   };
 }
 
