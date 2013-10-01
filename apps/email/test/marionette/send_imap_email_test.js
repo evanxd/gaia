@@ -22,16 +22,19 @@ marionette('send email via IMAP', function() {
     const ONE_NEW_EMAIL_NOTIFICATION = '1 New Email';
 
     app.manualSetupImapEmail(server);
+    client.debug.screenshot('Add a account.');
     app.tapCompose();
 
     // write email to self
     app.typeTo('testy@localhost');
     app.typeSubject('test email');
     app.typeBody('I still have a dream.');
+    client.debug.screenshot('Write a email.');
     app.tapSend();
 
     app.tapRefreshButton();
     app.waitForNewEmail();
+    client.debug.screenshot('Receive a new email.');
     // get the text of the notification bar
     var notificationText = app.notificationBar.text();
     assert.equal(
@@ -39,6 +42,7 @@ marionette('send email via IMAP', function() {
       ONE_NEW_EMAIL_NOTIFICATION,
       notificationText + ' should equal ' + ONE_NEW_EMAIL_NOTIFICATION
     );
+    client.debug.sendScreenshot();
   });
 });
 
