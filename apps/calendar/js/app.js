@@ -518,6 +518,10 @@ Calendar.App = (function(window) {
 
   window.addEventListener('load', function onLoad() {
     window.removeEventListener('load', onLoad);
+    var ele = document.querySelector('#time-views');
+    ele.addEventListener('transitionend', function() {
+      alert('xd');
+    });
     App.init();
   });
 
