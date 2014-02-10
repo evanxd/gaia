@@ -13,7 +13,7 @@ function Base(client, origin, selectors) {
 module.exports = Base;
 
 Base.prototype = {
-
+  URL: 'app://settings.gaiamobile.org',
   /**
    * Launches settings app, switches to frame, and waits for it to be loaded.
    */
@@ -45,6 +45,46 @@ Base.prototype = {
    */
   waitForElement: function(name) {
     return this.client.helper.waitForElement(this.selectors[name]);
-  }
+  },
 
+  /**
+   * Go to system app scope
+   */
+  switchToSystem: function() {
+    this.client.switchToFrame();
+  },
+
+  /**
+   * Go to settings app scope
+   */
+  backToApp: function() {
+    this.switchToSystem();
+    this.client.apps.switchToApp(this.URL);
+  },
+
+  /**
+   * Enable value selector of system app, and choose |name|
+   * @param {String} name of the choosing item
+   */
+  valueSelect: function(name) {
+    this.switchToSystem();
+    var list = this.client.helper.waitForElement('#value-selector-container');
+    this.client.waitFor(function() {
+      return list.getAttribute('hidden') === true;
+    });
+    var items = this.client.helper.waitForElement(
+      '#value-selector-container ol li');
+    this.client.waitFor(function() {
+      return items.length > 0;
+    });
+
+    var item;
+    for (var i = 0; i < items.length; i++) {
+      item = items[i];
+      if (item.findElement('span').text() === name) {
+        break;
+      }
+    }
+    return item;
+  }
 };

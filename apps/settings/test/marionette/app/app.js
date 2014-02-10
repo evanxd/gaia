@@ -5,7 +5,8 @@ var Base = require('./base'),
     HotspotPanel = require('./regions/hotspot'),
     HotspotSettingsPanel = require('./regions/hotspot_settings'),
     SupportPanel = require('./regions/support'),
-    BatteryPanel = require('./regions/battery');
+    BatteryPanel = require('./regions/battery'),
+    DatetimePanel = require('./regions/date_time');
 
 // origin of the settings app
 var ORIGIN = 'app://settings.gaiamobile.org';
@@ -31,7 +32,8 @@ Settings.Selectors = {
   'hotspotPanel': '#hotspot',
   'hotspotSettingsTrigger': '#hotspot-settings-section button',
   'supportMenuItem': '#menuItem-help',
-  'batteryMenuItem': '#menuItem-battery'
+  'batteryMenuItem': '#menuItem-battery',
+  'datetimeMenuItem': '#menuItem-dateAndTime'
 };
 
 Settings.prototype = {
@@ -80,6 +82,12 @@ Settings.prototype = {
     return this._batteryPanel;
   },
 
+  get datetimePanel() {
+    this.openPanel('datetimeMenuItem');
+    this._datetimePanel = this._datetimePanel ||
+      new DatetimePanel(this.client);
+    return this._datetimePanel;
+  },
   /**
    * @private
    */
