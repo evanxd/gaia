@@ -46,5 +46,4 @@ Base.prototype = {
   waitForElement: function(name) {
     return this.client.helper.waitForElement(this.selectors[name]);
   }
-
 };
