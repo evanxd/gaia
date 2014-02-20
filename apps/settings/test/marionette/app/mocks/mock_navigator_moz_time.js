@@ -9,10 +9,16 @@ Services.obs.addObserver(function(document) {
   var time = new Date();
   window.navigator.__defineGetter__('mozTime', function() {
     return {
+      __exposedProps__: {
+        get: 'r',
+        set: 'r'
+      },
       get: function() {
+        dump('evanxd: mozTime.get()');
         return time;
       },
       set: function(t) {
+        dump('evanxd: mozTime.set()');
         time = t;
       }
     };

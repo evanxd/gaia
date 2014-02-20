@@ -36,7 +36,15 @@ marionette('Date time', function() {
            leadingZero(d.getMinutes()) + ' ' + amPm;
   }
 
-  test('current date and time', function() {
+  test('use mozTime api', function() {
+    client.executeScript(function() {
+      var navigator = window.wrappedJSObject.navigator;
+      alert(navigator.mozTime.get());
+    });
+    client.helper.wait(3000);
+  });
+
+  test.skip('current date and time', function() {
     assert.equal(
       datetimePanel.clockDate,
       dateForm()
@@ -47,14 +55,14 @@ marionette('Date time', function() {
     );
   });
 
-  test('change date and time', function() {
+  test.skip('change date and time', function() {
     datetimePanel.setClockDate('1986-09-24');
     datetimePanel.setClockTime('00:23');
     console.log(datetimePanel.systemTime);
 
   });
 
-  test('select City and Region', function() {
+  test.skip('select City and Region', function() {
     var key = 'time.timezone';
     var region = 'Europe';
     var city = 'Belgrade';
