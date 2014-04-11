@@ -371,10 +371,10 @@ var CallScreen = {
 
   // when BT device available: switch to BT
   // when BT device unavailable: switch to receiver
-  switchToDefaultOut: function cs_switchToDefaultOut() {
+  switchToDefaultOut: function cs_switchToDefaultOut(doNotConnect) {
     this.speakerButton.classList.remove('active-state');
     this.bluetoothButton.classList.add('active-state');
-    CallsHandler.switchToDefaultOut();
+    CallsHandler.switchToDefaultOut(doNotConnect);
     this.toggleBluetoothMenu(false);
   },
 
@@ -400,12 +400,14 @@ var CallScreen = {
   },
 
   placeNewCall: function cs_placeNewCall() {
-    navigator.mozApps.getSelf().onsuccess = function(evt) {
-      var app = evt.target.result;
-      CallsHandler.requestContactsTab();
-      app.launch('dialer');
-      window.resizeTo(100, 40);
-    };
+    new MozActivity({
+      name: 'dial',
+      data: {
+        type: 'webtelephony/number',
+        number: ''
+      }
+    });
+    window.resizeTo(100, 40);
   },
 
   render: function cs_render(layout_type) {
