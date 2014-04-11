@@ -1,6 +1,6 @@
 {
-  "name": "Fake Form",
-  "description": "A fake Form app",
+  "name": "keyboard tests",
+  "description": "A keyboard testing app.",
   "type": "certified",
   "launch_path": "/index.html",
   "developer": {
