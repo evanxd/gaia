@@ -259,6 +259,7 @@
     <link rel="resource" type="application/l10n" href="shared/locales/date.ini">
     <link rel="resource" type="application/l10n" href="shared/locales/permissions.ini">
     <link rel="resource" type="application/l10n" href="shared/locales/download.ini">
+    <link rel="resource" type="application/l10n" href="shared/locales/voicemail.ini">
 
     <!-- Payment -->
     <script defer src="js/payment.js"></script>
@@ -358,6 +359,7 @@
     <!-- Rocketbar -->
     <script defer src="js/browser.js"></script>
     <script defer src="js/rocketbar.js"></script>
+    <script defer src="js/search_window.js"></script>
     <script defer src="shared/js/url_helper.js"></script>
     <link rel="stylesheet" type="text/css" href="style/rocketbar/rocketbar.css">
 
@@ -446,11 +448,11 @@
         <!-- Rocketbar-->
         <div id="rocketbar">
           <div id="rocketbar-title">
-            <span id="rocketbar-title-content" data-l10n-id="search">Search</span>
+            <span id="rocketbar-title-content" data-l10n-id="search-or-enter-address">Search or enter address</span>
           </div>
           <form id="rocketbar-form" class="hidden">
             <input id="rocketbar-input" type="text" x-inputmode="verbatim"
-              placeholder="Search" data-l10n-id="search" value="">
+              placeholder="Search or enter address" data-l10n-id="search-or-enter-address" value="">
             </input>
           </form>
         </div>

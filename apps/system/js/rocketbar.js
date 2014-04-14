@@ -1,5 +1,5 @@
 'use strict';
-/* global SettingsListener, AppWindow */
+/* global SettingsListener, AppWindow, SearchWindow */
 
 /**
  * The Rocketbar is a system-wide URL/search/title bar.
@@ -18,10 +18,9 @@ var Rocketbar = {
     this.enabled = false;
     this.expanded = false;
     this.focused = false;
+    this.onHomescreen = false;
 
     // Properties
-    this._searchAppURL = null;
-    this._searchManifestURL = null;
     this._port = null; // Inter-app communications port
     this._touchStart = -1;
     this._wasClicked = false; // Remember when transition triggered by a click
@@ -46,8 +45,6 @@ var Rocketbar = {
         this.disable();
       }
     }.bind(this));
-    SettingsListener.observe('rocketbar.searchAppURL', '',
-      this.setSearchAppURL.bind(this));
   },
 
   /**
@@ -80,7 +77,8 @@ var Rocketbar = {
     window.addEventListener('home', this);
     window.addEventListener('cardviewclosedhome', this);
     window.addEventListener('appopened', this);
-    window.addEventListener('cardviewclosed', this);
+    window.addEventListener('homescreenopened', this);
+    window.addEventListener('stackchanged', this);
 
     // Listen for events from Rocketbar
     this.rocketbar.addEventListener('touchstart', this);
@@ -93,6 +91,9 @@ var Rocketbar = {
 
     // Listen for messages from search app
     window.addEventListener('iac-search-results', this);
+
+    // Listen for FTU events
+    window.addEventListener('ftudone', this);
   },
 
   /**
@@ -119,9 +120,6 @@ var Rocketbar = {
       case 'appopened':
         this.collapse(e);
         break;
-      case 'cardviewclosed':
-        this.handleCardViewClosed(e);
-        break;
       case 'touchstart':
       case 'touchmove':
       case 'touchend':
@@ -142,6 +140,15 @@ var Rocketbar = {
       case 'iac-search-results':
         this.handleSearchMessage(e);
         break;
+      case 'ftudone':
+        this.handleFTUDone(e);
+        break;
+      case 'homescreenopened':
+        this.enterHome(e);
+        break;
+      case 'stackchanged':
+        this.handleStackChanged(e);
+        break;
     }
   },
 
@@ -157,7 +164,8 @@ var Rocketbar = {
     window.removeEventListener('home', this);
     window.removeEventListener('cardviewclosedhome', this);
     window.removeEventListener('appopened', this);
-    window.removeEventListener('cardviewclosed', this);
+    window.removeEventListener('homescreenopened', this);
+    window.removeEventListener('stackchanged', this);
 
     // Stop listening for events from Rocketbar
     this.rocketbar.removeEventListener('touchstart', this);
@@ -202,9 +210,35 @@ var Rocketbar = {
     }
     this.expanded = false;
     this.rocketbar.classList.remove('expanded');
+    this.exitHome();
     this.hideResults();
     this.blur();
     window.dispatchEvent(new CustomEvent('rocketbarcollapse'));
+  },
+
+  /**
+   * Put Rocketbar into homescreen state.
+   */
+  enterHome: function() {
+    if (this.onHomescreen) {
+      return;
+    }
+    this.onHomescreen = true;
+    if (!this.expanded) {
+      this.expand();
+    }
+    this.rocketbar.classList.add('on-homescreen');
+  },
+
+  /**
+   * Take Rocketbar out of homescreen state.
+   */
+  exitHome: function() {
+    if (!this.onHomescreen) {
+      return;
+    }
+    this.onHomescreen = false;
+    this.rocketbar.classList.remove('on-homescreen');
   },
 
   /**
@@ -228,13 +262,21 @@ var Rocketbar = {
   },
 
   /**
+   * Reset the Rocketbar to its initial empty state
+   */
+  clear: function() {
+    this.input.value = '';
+    this.titleContent.textContent =
+      navigator.mozL10n.get('search-or-enter-address');
+  },
+
+  /**
    * Show the task manager and clear Rocketbar.
    */
   showTaskManager: function() {
     this.showResults();
     window.dispatchEvent(new CustomEvent('taskmanagershow'));
-    this.input.value = '';
-    this.titleContent.textContent = navigator.mozL10n.get('search');
+    this.clear();
   },
 
   /**
@@ -244,11 +286,16 @@ var Rocketbar = {
     // Swallow keyboard change events so homescreen does not resize
     this.body.addEventListener('keyboardchange',
       this.handleKeyboardChange, true);
+    this.rocketbar.classList.add('focused');
     this.title.classList.add('hidden');
     this.form.classList.remove('hidden');
     this.input.select();
+    this.screen.classList.add('rocketbar-focused');
     this.focused = true;
+    this.showResults();
     this.loadSearchApp();
+    var event = new CustomEvent('rocketbarfocus');
+    window.dispatchEvent(event);
   },
 
   /**
@@ -262,9 +309,13 @@ var Rocketbar = {
       return;
     }
     this.input.blur();
+    this.rocketbar.classList.remove('focused');
     this.title.classList.remove('hidden');
     this.form.classList.add('hidden');
+    this.screen.classList.remove('rocketbar-focused');
     this.focused = false;
+    var event = new CustomEvent('rocketbarblur');
+    window.dispatchEvent(event);
   },
 
   /**
@@ -275,6 +326,9 @@ var Rocketbar = {
   handleAppChange: function(e) {
     this.handleLocationChange(e);
     this.handleTitleChange(e);
+    this.exitHome();
+    this.collapse();
+    this.hideResults();
   },
 
   /**
@@ -313,10 +367,10 @@ var Rocketbar = {
    * Handle press of hardware home button.
    */
   handleHome: function() {
-    this.titleContent.textContent = navigator.mozL10n.get('search');
-    this.input.value = '';
+    this.clear();
     this.hideResults();
-    this.collapse();
+    this.enterHome();
+    this.blur();
   },
 
   /**
@@ -335,7 +389,8 @@ var Rocketbar = {
         dy = parseInt(e.touches[0].pageY) - parseInt(this._touchStart);
         if (dy > this.EXPANSION_THRESHOLD) {
           this.expand();
-        } else if (dy < (this.EXPANSION_THRESHOLD * -1)) {
+        } else if (dy < (this.EXPANSION_THRESHOLD * -1) &&
+          !this.onHomescreen) {
           this.collapse();
         }
         if (dy > this.TASK_MANAGER_THRESHOLD && !this.focused) {
@@ -372,6 +427,7 @@ var Rocketbar = {
   handleTransitionEnd: function() {
     if (this.expanded && this._wasClicked) {
       this.focus();
+      this._wasClicked = false;
     }
   },
 
@@ -420,49 +476,22 @@ var Rocketbar = {
   },
 
   /**
-   * Handle card view being closed.
-   *
-   * @param {Event} e cardviewclosed event.
+   * Handle change to sheets stack.
    */
-  handleCardViewClosed: function(e) {
-    // If closed because no more cards, focus the Rocketbar.
-    if (e.detail == null) {
+  handleStackChanged: function(e) {
+    // Focus the Rocketbar in cards view when stack length reaches zero.
+    if (this.expanded && e.detail.sheets.length === 0) {
       this.focus();
     }
   },
 
   /**
-   * Insert the search app iframe into the DOM.
+   * Instantiates a new SearchWindow
    */
   loadSearchApp: function() {
-    var container = this.results;
-    var searchFrame = container.querySelector('iframe');
-
-    // If there is already a search frame, tell it that it is
-    // visible and bail out.
-    if (searchFrame && searchFrame.setVisible) {
-      searchFrame.setVisible(true);
-      return;
+    if (!this.searchWindow) {
+      this.searchWindow = new SearchWindow();
     }
-
-    searchFrame = document.createElement('iframe');
-    searchFrame.id = 'rocketbar-results-frame';
-    searchFrame.src = this._searchAppURL;
-    searchFrame.setAttribute('mozapptype', 'mozsearch');
-    searchFrame.setAttribute('mozbrowser', 'true');
-    searchFrame.setAttribute('remote', 'true');
-    searchFrame.setAttribute('mozapp', this._searchManifestURL);
-    searchFrame.classList.add('hidden');
-
-    container.appendChild(searchFrame);
-
-    searchFrame.addEventListener('mozbrowsererror', function() {
-      container.removeChild(searchFrame);
-    });
-
-    searchFrame.addEventListener('mozbrowserloadend', function() {
-      searchFrame.classList.remove('hidden');
-    });
 
     this.initSearchConnection();
   },
@@ -472,6 +501,12 @@ var Rocketbar = {
    */
   initSearchConnection: function() {
     var self = this;
+
+    if (this._port) {
+      return;
+    }
+
+    this._port = 'pending';
     navigator.mozApps.getSelf().onsuccess = function() {
       var app = this.result;
       app.connect('search').then(
@@ -510,6 +545,13 @@ var Rocketbar = {
       this.hideResults();
       this.collapse();
     }
+  },
+
+  /**
+  * Reset the Rocketbar after completion of FTU
+  */
+  handleFTUDone: function() {
+    this.clear();
   },
 
   /**
