@@ -1,7 +1,6 @@
 'use strict';
 
-var KeyboardTests = require('./lib/keyboard_tests'),
-    assert = require('assert');
+var KeyboardTests = require('./lib/keyboard_tests');
 
 var KEYBOARD_ORIGIN = 'app://keyboard.gaiamobile.org';
 
@@ -29,18 +28,8 @@ marionette('Keyboard APP', function() {
     // switch to System app
     client.switchToFrame();
     client.apps.switchToApp(KEYBOARD_ORIGIN);
-    // XXX: Workaround
-    // To get the #keyboard element to instead of the body element.
-    // The value of `client.findElement('body').displayed()` could not be true
-    // when the keyboard app is show up in the screen currently.
-    // Please refer to http://bugzil.la/995865.
-    var keyboard = client.findElement('#keyboard');
 
-    client.waitFor(function() {
-      if (keyboard.displayed()) {
-        assert.ok(true);
-        return true;
-      }
-    });
+    // Capture and print screenshot of Keyboard app.
+    console.log('Screenshot: data:image/png;base64,' + client.screenshot());
   });
 });
