@@ -278,7 +278,9 @@ Calendar.prototype = {
     // need to go back to top most frame before being able to switch to
     // a different app!!!
     client.switchToFrame();
-    client.apps.switchToApp('app://keyboard.gaiamobile.org');
+    client.switchToFrame(
+      client.findElement('iframe[src*="app://keyboard.gaiamobile.org"]')
+    );
     client.waitFor(function() {
       return client.executeScript(function() {
         return document.hidden;
