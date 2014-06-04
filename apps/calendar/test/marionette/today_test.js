@@ -6,6 +6,8 @@ var Calendar = require('./lib/calendar'),
 
 var DATE_FORMAT = 'YYYY-MM-DD';
 
+// Hello world!
+
 marionette('today', function() {
   var app;
 
