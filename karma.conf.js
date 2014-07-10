@@ -16,9 +16,9 @@ module.exports = function(config) {
     // list of files / patterns to load in the browser
     files: [
       'setup.js',
-  	  'shared/test/unit/mocks/mocks_helper.js',
-  	  'shared/js/template.js',
-      'apps/video/test/unit/*.js'
+      'assert.js',
+      'apps/video/js/video_utils.js',
+      'apps/video/test/unit/video_utils_test.js'
     ],
 
 	client:{
@@ -64,7 +64,7 @@ module.exports = function(config) {
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: ['Firefox'],
+    browsers: ['FirefoxNightly'],
 
 
     // Continuous Integration mode
