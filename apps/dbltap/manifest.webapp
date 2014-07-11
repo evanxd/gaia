@@ -1,0 +1,10 @@
+{
+  "name": "dbltap",
+  "description": "dbltap",
+  "type": "certified",
+  "launch_path": "/index.html",
+  "developer": {
+    "name": "evanxd",
+    "url": "https://github.com/evanxd/gaia"
+  }
+}
