@@ -1,6 +1,6 @@
 'use strict';
 
-requireApp('/video/js/video_utils.js');
+require('/apps/calendar/js/video_utils.js');
 
 suite('Video Utils Unit Tests', function() {
 
