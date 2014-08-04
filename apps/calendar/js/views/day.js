@@ -41,7 +41,7 @@ Calendar.ns('Views').Day = (function() {
           this.app.timeController.selectedDay = this.app.timeController.day;
           /* falls through */
         case 'selectedDayChange':
-          this.changeDate(e.data[0]);
+          this._scrollDayEventsWrapperOnlyForToday(e.data[0]);
           break;
       }
     },
@@ -63,7 +63,7 @@ Calendar.ns('Views').Day = (function() {
     },
 
     render: function() {
-      this.changeDate(
+      this._scrollDayEventsWrapper(
         this.app.timeController.day
       );
     },
@@ -93,14 +93,49 @@ Calendar.ns('Views').Day = (function() {
       controller.on('selectedDayChange', this);
 
       controller.moveToMostRecentDay();
-
-      // ensure we change the date, if this is already
-      // the selected date the cost here is very small.
-      this.changeDate(controller.position);
+      this._scrollDayEventsWrapper(controller.position);
 
       if (!this.frames || !this.frames.length) {
         console.error('(Calendar: render error) no child frames');
         console.trace();
+      }
+    },
+
+    _scrollDayEventsWrapper: function(date) {
+      var scrollTo = 0;
+      var now = new Date();
+
+      if (Calendar.Calc.isSameDate(date, now)) {
+        scrollTo = this._getHourScrollTop(now.getHours() - 1);
+      } else {
+        scrollTo = this._getHourScrollTop(8);
+      }
+      this.changeDate(date, {
+        scrollTop: scrollTo,
+        animated: true
+      });
+    },
+
+    _scrollDayEventsWrapperOnlyForToday: function(date) {
+      var now = new Date();
+
+      if (Calendar.Calc.isSameDate(date, now)) {
+        this.changeDate(date, {
+          scrollTop: this._getHourScrollTop(now.getHours() - 1),
+          animated: true
+        });
+      } else {
+        this.changeDate(date);
+      }
+    },
+
+    _getHourScrollTop: function(hour) {
+      if (hour >= 0 && hour <= 23) {
+        // 50 is the height of a hour element
+        // in the day-events-wrapper element.
+        return hour * 50;
+      } else {
+        return 0;
       }
     }
   };

@@ -646,11 +646,47 @@ Calendar.ns('Views').DayBased = (function() {
       return scrollTop;
     },
 
-    setScrollTop: function(scrollTop) {
+    setScrollTop: function(scrollTop, animated) {
       var scroll = this.element.querySelectorAll('.day-events-wrapper')[0];
-      scroll.scrollTop = scrollTop;
-    }
+      if (animated) {
+        this._animatedScroll(scroll, scrollTop);
+      } else {
+        scroll.scrollTop = scrollTop;
+      }
+    },
 
+    /**
+     * Animated scroll to the destination scrollTop for am element.
+     *
+     * @param {Object} element the element we would like to scroll.
+     * @param {Number} destinationScrollTop the scrollTop of destination.
+     */
+    _animatedScroll: function(element, destinationScrollTop) {
+      var SCROLL_INTERVAL = 16;
+      var timeCounter = 0;
+      var progress = 0;
+      var startScrollTop = element.scrollTop;
+      var distance = destinationScrollTop - startScrollTop;
+
+      var timerId = setInterval(function() {
+        var scrollTop = element.scrollTop;
+        var maxScrollTop = element.scrollHeight - element.clientHeight;
+        if (scrollTop === destinationScrollTop ||
+            (scrollTop === maxScrollTop && distance > 0) ||
+            (scrollTop === 0 && distance < 0)
+          ) {
+          clearInterval(timerId);
+          return;
+        }
+
+        timeCounter += SCROLL_INTERVAL;
+        progress = timeCounter / Math.abs(distance);
+        progress = progress > 1 ? 1 : progress;
+
+        element.scrollTop =
+          startScrollTop + distance * progress;
+      }, SCROLL_INTERVAL);
+    }
   };
 
   return DayBased;

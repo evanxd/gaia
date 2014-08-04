@@ -182,20 +182,25 @@ Calendar.ns('Views').TimeParent = (function() {
      *
      * @param {Date} time center point to activate.
      */
-    changeDate: function(time) {
-      var prevScrollTop = 0;
+    changeDate: function(time, options) {
+      var scrollTop = 0;
+      var animated = false;
 
       // deactivate previous frame
       if (this.currentFrame) {
-        prevScrollTop = this.currentFrame.getScrollTop();
+        scrollTop = this.currentFrame.getScrollTop();
         this.currentFrame.deactivate();
       }
 
-      this.date = time;
+      if (options) {
+        scrollTop = options.scrollTop || scrollTop;
+        animated = options.animated || animated;
+      }
 
       // setup & find all ids
       var next = this._nextTime(time);
       var prev = this._previousTime(time);
+      this.date = time;
 
       // add previous frame
       this.addFrame(prev);
@@ -203,7 +208,7 @@ Calendar.ns('Views').TimeParent = (function() {
       // create & activate current frame
       var cur = this.currentFrame = this.addFrame(time);
       cur.activate();
-      cur.setScrollTop(prevScrollTop);
+      cur.setScrollTop(scrollTop, animated);
 
       // add next frame
       this.addFrame(next);
