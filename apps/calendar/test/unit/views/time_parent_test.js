@@ -261,6 +261,66 @@ suiteGroup('Views.TimeParent', function() {
 
       assert.equal(scrollTop, 100, 'same scrollTop');
     });
+
+    suite('pass the options argument', function() {
+      setup(function() {
+        sinon.stub(subject.currentFrame, 'setScrollTop');
+      });
+
+      teardown(function() {
+        subject.currentFrame.setScrollTop.restore();
+      });
+
+      test('do animated scrolling', function() {
+        subject.changeDate(date, {
+          animated: true
+        });
+
+        sinon.assert.calledWithExactly(
+          subject.currentFrame.setScrollTop,
+          0, true
+        );
+      });
+
+      test('do animated scrolling to the position ' +
+           'of the scrollTop as 100', function() {
+        subject.changeDate(date, {
+          scrollTop: 100,
+          animated: true
+        });
+
+        sinon.assert.calledWithExactly(
+          subject.currentFrame.setScrollTop,
+          100, true
+        );
+      });
+
+      test('do non-animated scrolling to the position ' +
+           'of the scrollTop as 100 ' +
+           'without the animated argument', function() {
+        subject.changeDate(date, {
+          scrollTop: 100
+        });
+
+        sinon.assert.calledWithExactly(
+          subject.currentFrame.setScrollTop,
+          100, false
+        );
+      });
+
+      test('do non-animated scrolling to the position ' +
+           'of the scrollTop as 100', function() {
+        subject.changeDate(date, {
+          scrollTop: 100,
+          animated: false
+        });
+
+        sinon.assert.calledWithExactly(
+          subject.currentFrame.setScrollTop,
+          100, false
+        );
+      });
+    });
   });
 
   suite('#handleEvent', function() {

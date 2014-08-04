@@ -808,4 +808,46 @@ suiteGroup('Views.DayBased', function() {
       assert.equal(observer, -1, 'removes observer');
     });
   });
+
+  suite('#_linearScroll', function() {
+    var clock;
+    var element;
+    var bottomScrollTop;
+
+    setup(function() {
+      clock = sinon.useFakeTimers();
+      element = {
+        scrollTop: 0,
+        clientHeight: 300,
+        scrollHeight: 2000
+      };
+      bottomScrollTop = element.scrollHeight - element.clientHeight;
+    });
+
+    teardown(function() {
+      clock.restore();
+    });
+
+    test('scroll to top from bottom', function() {
+      element.scrollTop = bottomScrollTop;
+      subject._animatedScroll(element, 0);
+      // Wait for the scrolling.
+      clock.tick(2000);
+      assert.equal(element.scrollTop, 0);
+    });
+
+    test('scroll to bottom from top', function() {
+      element.scrollTop = 0;
+      subject._animatedScroll(element, bottomScrollTop);
+      // Wait for the scrolling.
+      clock.tick(2000);
+      assert.equal(element.scrollTop, bottomScrollTop);
+    });
+
+    test('do not scroll', function() {
+      element.scrollTop = 100;
+      subject._animatedScroll(element, 100);
+      assert.equal(element.scrollTop, 100);
+    });
+  });
 });

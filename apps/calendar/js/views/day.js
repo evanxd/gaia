@@ -119,13 +119,12 @@ Calendar.ns('Views').Day = (function() {
     _scrollDayEventsWrapperOnlyForToday: function(date) {
       var now = new Date();
 
+      this.changeDate(date);
       if (Calendar.Calc.isSameDate(date, now)) {
         this.changeDate(date, {
           scrollTop: this._getHourScrollTop(now.getHours() - 1),
           animated: true
         });
-      } else {
-        this.changeDate(date);
       }
     },
 

@@ -228,4 +228,129 @@ suiteGroup('Views.Day', function() {
     assert.equal(subject.onfirstseen, subject.render);
   });
 
+  suite('#_scrollDayEventsWrapper', function() {
+    setup(function() {
+      sinon.stub(subject, 'changeDate');
+    });
+
+    teardown(function() {
+      subject.changeDate.restore();
+    });
+
+    test('today', function() {
+      var today = new Date();
+      var scrollTop = subject._getHourScrollTop(today.getHours() - 1);
+
+      subject._scrollDayEventsWrapper(today);
+      sinon.assert.calledWithExactly(
+        subject.changeDate,
+        today,
+        {
+          scrollTop: scrollTop,
+          animated: true
+        }
+      );
+    });
+
+    test('previous day', function() {
+      var previousDay = new Date();
+      previousDay.setDate(previousDay.getDate() - 1);
+      var scrollTop = subject._getHourScrollTop(8);
+
+      subject._scrollDayEventsWrapper(previousDay);
+      sinon.assert.calledWithExactly(
+        subject.changeDate,
+        previousDay,
+        {
+          scrollTop: scrollTop,
+          animated: true
+        }
+      );
+    });
+
+    test('next day', function() {
+      var nextDay = new Date();
+      nextDay.setDate(nextDay.getDate() + 1);
+      var scrollTop = subject._getHourScrollTop(8);
+
+      subject._scrollDayEventsWrapper(nextDay);
+      sinon.assert.calledWithExactly(
+        subject.changeDate,
+        nextDay,
+        {
+          scrollTop: scrollTop,
+          animated: true
+        }
+      );
+    });
+  });
+
+  suite('#_scrollDayEventsWrapper', function() {
+    setup(function() {
+      sinon.stub(subject, 'changeDate');
+    });
+
+    teardown(function() {
+      subject.changeDate.restore();
+    });
+
+    test('today', function() {
+      var today = new Date();
+      var scrollTop = subject._getHourScrollTop(today.getHours() - 1);
+
+      subject._scrollDayEventsWrapperOnlyForToday(today);
+      sinon.assert.calledWithExactly(
+        subject.changeDate,
+        today,
+        {
+          scrollTop: scrollTop,
+          animated: true
+        }
+      );
+    });
+
+    test('previous day', function() {
+      var previousDay = new Date();
+      previousDay.setDate(previousDay.getDate() - 1);
+
+      subject._scrollDayEventsWrapperOnlyForToday(previousDay);
+      sinon.assert.calledWithExactly(
+        subject.changeDate,
+        previousDay
+      );
+    });
+
+    test('next day', function() {
+      var nextDay = new Date();
+      nextDay.setDate(nextDay.getDate() + 1);
+
+      subject._scrollDayEventsWrapperOnlyForToday(nextDay);
+      sinon.assert.calledWithExactly(
+        subject.changeDate,
+        nextDay
+      );
+    });
+  });
+
+  suite('#_getHourScrollTop', function() {
+    test('get scrollTop of hour 0', function() {
+      var scrollTop = subject._getHourScrollTop(0);
+      assert.equal(scrollTop, 0);
+    });
+
+    test('get scrollTop of hour 12', function() {
+      var scrollTop = subject._getHourScrollTop(12);
+      assert.equal(scrollTop, 600);
+    });
+
+    test('get scrollTop of hour 23', function() {
+      var scrollTop = subject._getHourScrollTop(23);
+      assert.equal(scrollTop, 1150);
+    });
+
+    test('get scrollTop of hour 25', function() {
+      var scrollTop = subject._getHourScrollTop(25);
+      assert.equal(scrollTop, 0);
+    });
+  });
 });
