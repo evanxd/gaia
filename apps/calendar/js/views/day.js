@@ -120,6 +120,7 @@ Calendar.ns('Views').Day = (function() {
 
       if (Calendar.Calc.isSameDate(date, now)) {
         hour = now.getHours() - 1;
+        hour = hour >= 0 ? hour : 0;
       } else if (!onlyToday) {
         hour = 8;
       }

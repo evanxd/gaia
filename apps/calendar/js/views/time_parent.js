@@ -209,7 +209,7 @@ Calendar.ns('Views').TimeParent = (function() {
       cur.activate();
       cur.setScrollTop(prevScrollTop);
 
-      if (scrollToHour) {
+      if (typeof scrollToHour === 'number') {
         cur.animatedScroll(
           this._getHourScrollTop(scrollToHour)
         );
