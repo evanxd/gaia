@@ -658,30 +658,21 @@ Calendar.ns('Views').DayBased = (function() {
      */
     animatedScroll: function(scrollTop) {
       var scroll = this.element.querySelectorAll('.day-events-wrapper')[0];
-      var SCROLL_INTERVAL = 16;
-      var timeCounter = 0;
-      var progress = 0;
-      var startScrollTop = scroll.scrollTop;
-      var distance = scrollTop - startScrollTop;
+      var content = scroll.querySelector('.day-events');
+      var SPEED = 1000;
+      var scrollTo = scroll.scrollTop - scrollTop;
+      var seconds = Math.abs(scrollTo) / SPEED;
 
-      var timerId = setInterval(function() {
-        var currentScrollTop = scroll.scrollTop;
-        var maxScrollTop = scroll.scrollHeight - scroll.clientHeight;
-        if (currentScrollTop === scrollTop ||
-            (currentScrollTop === maxScrollTop && distance > 0) ||
-            (currentScrollTop === 0 && distance < 0)
-          ) {
-          clearInterval(timerId);
-          return;
-        }
+      setTimeout(function() {
+        content.style.marginTop = scrollTo + 'px';
+        content.style.transition = seconds + 's linear';
+      });
 
-        timeCounter += SCROLL_INTERVAL;
-        progress = timeCounter / Math.abs(distance);
-        progress = progress > 1 ? 1 : progress;
-
-        scroll.scrollTop =
-          startScrollTop + distance * progress;
-      }, SCROLL_INTERVAL);
+      content.addEventListener('transitionend', function setScrollTop() {
+        content.removeEventListener('transitionend', setScrollTop);
+        content.removeAttribute('style');
+        scroll.scrollTop = scrollTop;
+      });
     }
   };
 
