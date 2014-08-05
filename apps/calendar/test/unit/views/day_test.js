@@ -49,6 +49,7 @@ suiteGroup('Views.Day', function() {
       this.destroy = sinon.spy();
       this.element = document.createElement('div');
     };
+    subject._getHourScrollTop = sinon.spy();
   });
 
   test('#initialize', function() {
@@ -227,22 +228,5 @@ suiteGroup('Views.Day', function() {
 
   test('#onfirstseen', function() {
     assert.equal(subject.onfirstseen, subject.render);
-  });
-
-  suite('#_getHourScrollTop', function() {
-    test('get scrollTop of hour 0', function() {
-      var scrollTop = subject._getHourScrollTop(0);
-      assert.equal(scrollTop, 0);
-    });
-
-    test('get scrollTop of hour 12', function() {
-      var scrollTop = subject._getHourScrollTop(12);
-      assert.equal(scrollTop, 600);
-    });
-
-    test('get scrollTop of hour 23', function() {
-      var scrollTop = subject._getHourScrollTop(23);
-      assert.equal(scrollTop, 1150);
-    });
   });
 });

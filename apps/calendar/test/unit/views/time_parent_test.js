@@ -268,60 +268,22 @@ suiteGroup('Views.TimeParent', function() {
 
     suite('pass the options argument', function() {
       setup(function() {
+        sinon.stub(subject, '_getHourScrollTop');
         sinon.stub(subject.currentFrame, 'animatedScroll');
       });
 
       teardown(function() {
+        subject._getHourScrollTop.restore();
         subject.currentFrame.animatedScroll.restore();
       });
 
       test('do animated scrolling', function() {
         subject.changeDate(date, {
-          animated: true
+          scrollToHour: 1
         });
 
         assert.ok(
-          subject.currentFrame.animatedScroll.notCalled,
-          'never call'
-        );
-      });
-
-      test('do animated scrolling to the position ' +
-           'of the scrollTop as 100', function() {
-        subject.changeDate(date, {
-          scrollTop: 100,
-          animated: true
-        });
-
-        sinon.assert.calledWithExactly(
-          subject.currentFrame.animatedScroll,
-          100
-        );
-      });
-
-      test('do non-animated scrolling to the position ' +
-           'of the scrollTop as 100 ' +
-           'without the animated argument', function() {
-        subject.changeDate(date, {
-          scrollTop: 100
-        });
-
-        assert.ok(
-          subject.currentFrame.animatedScroll.notCalled,
-          'never call'
-        );
-      });
-
-      test('do non-animated scrolling to the position ' +
-           'of the scrollTop as 100', function() {
-        subject.changeDate(date, {
-          scrollTop: 100,
-          animated: false
-        });
-
-        assert.ok(
-          subject.currentFrame.animatedScroll.notCalled,
-          'never call'
+          subject.currentFrame.animatedScroll.calledOnce
         );
       });
     });
