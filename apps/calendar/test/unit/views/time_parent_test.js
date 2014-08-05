@@ -277,13 +277,37 @@ suiteGroup('Views.TimeParent', function() {
         subject.currentFrame.animatedScroll.restore();
       });
 
-      test('do animated scrolling', function() {
+      test('scrollToHour as 0', function() {
         subject.changeDate(date, {
-          scrollToHour: 1
+          scrollToHour: 0
         });
-
         assert.ok(
           subject.currentFrame.animatedScroll.calledOnce
+        );
+      });
+
+      test('scrollToHour as 7', function() {
+        subject.changeDate(date, {
+          scrollToHour: 7
+        });
+        assert.ok(
+          subject.currentFrame.animatedScroll.calledOnce
+        );
+      });
+
+      test('scrollToHour as undefined', function() {
+        subject.changeDate(date, {
+          scrollToHour: undefined
+        });
+        assert.ok(
+          subject.currentFrame.animatedScroll.notCalled
+        );
+      });
+
+      test('no scrollToHour param', function() {
+        subject.changeDate(date);
+        assert.ok(
+          subject.currentFrame.animatedScroll.notCalled
         );
       });
     });
