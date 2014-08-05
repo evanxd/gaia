@@ -32,6 +32,7 @@ Calendar.ns('Views').Day = (function() {
     },
 
     handleEvent: function(e) {
+      var date;
       Parent.prototype.handleEvent.apply(
         this, arguments
       );
@@ -41,7 +42,11 @@ Calendar.ns('Views').Day = (function() {
           this.app.timeController.selectedDay = this.app.timeController.day;
           /* falls through */
         case 'selectedDayChange':
-          this._scrollDayEventsWrapperOnlyForToday(e.data[0]);
+          date = e.data[0];
+          this.changeDate(date, {
+            scrollTop: this._dateToScroll(date, { onlyToday: true }),
+            animated: true
+          });
           break;
       }
     },
@@ -63,9 +68,11 @@ Calendar.ns('Views').Day = (function() {
     },
 
     render: function() {
-      this._scrollDayEventsWrapper(
-        this.app.timeController.day
-      );
+      var date = this.app.timeController.day;
+      this.changeDate(date, {
+        scrollTop: this._dateToScroll(date),
+        animated: true
+      });
     },
 
     oninactive: function() {
@@ -93,7 +100,11 @@ Calendar.ns('Views').Day = (function() {
       controller.on('selectedDayChange', this);
 
       controller.moveToMostRecentDay();
-      this._scrollDayEventsWrapper(controller.position);
+      var date = controller.position;
+      this.changeDate(date, {
+        scrollTop: this._dateToScroll(date),
+        animated: true
+      });
 
       if (!this.frames || !this.frames.length) {
         console.error('(Calendar: render error) no child frames');
@@ -101,41 +112,28 @@ Calendar.ns('Views').Day = (function() {
       }
     },
 
-    _scrollDayEventsWrapper: function(date) {
-      var scrollTo = 0;
+    _dateToScroll: function(date, options) {
       var now = new Date();
+      var onlyToday = false;
+      var scrollTo;
+
+      if (options) {
+        onlyToday = options.onlyToday || onlyToday;
+      }
 
       if (Calendar.Calc.isSameDate(date, now)) {
         scrollTo = this._getHourScrollTop(now.getHours() - 1);
-      } else {
+      } else if (!onlyToday) {
         scrollTo = this._getHourScrollTop(8);
       }
-      this.changeDate(date, {
-        scrollTop: scrollTo,
-        animated: true
-      });
-    },
 
-    _scrollDayEventsWrapperOnlyForToday: function(date) {
-      var now = new Date();
-
-      this.changeDate(date);
-      if (Calendar.Calc.isSameDate(date, now)) {
-        this.changeDate(date, {
-          scrollTop: this._getHourScrollTop(now.getHours() - 1),
-          animated: true
-        });
-      }
+      return scrollTo;
     },
 
     _getHourScrollTop: function(hour) {
-      if (hour >= 0 && hour <= 23) {
-        // 50 is the height of a hour element
-        // in the day-events-wrapper element.
-        return hour * 50;
-      } else {
-        return 0;
-      }
+      // 50 is the height of a hour element
+      // in the day-events-wrapper element.
+      return hour * 50;
     }
   };
 

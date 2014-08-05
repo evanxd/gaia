@@ -183,18 +183,19 @@ Calendar.ns('Views').TimeParent = (function() {
      * @param {Date} time center point to activate.
      */
     changeDate: function(time, options) {
-      var scrollTop = 0;
+      var prevScrollTop = 0;
       var animated = false;
+      var scrollTop;
 
       // deactivate previous frame
       if (this.currentFrame) {
-        scrollTop = this.currentFrame.getScrollTop();
+        prevScrollTop = this.currentFrame.getScrollTop();
         this.currentFrame.deactivate();
       }
 
       if (options) {
-        scrollTop = options.scrollTop || scrollTop;
-        animated = options.animated || animated;
+        scrollTop = options.scrollTop;
+        animated = options.animated;
       }
 
       // setup & find all ids
@@ -208,7 +209,15 @@ Calendar.ns('Views').TimeParent = (function() {
       // create & activate current frame
       var cur = this.currentFrame = this.addFrame(time);
       cur.activate();
-      cur.setScrollTop(scrollTop, animated);
+
+      if (animated && scrollTop) {
+        cur.setScrollTop(prevScrollTop);
+        cur.animatedScroll(scrollTop);
+      } else if (scrollTop) {
+        cur.setScrollTop(scrollTop);
+      } else {
+        cur.setScrollTop(prevScrollTop);
+      }
 
       // add next frame
       this.addFrame(next);

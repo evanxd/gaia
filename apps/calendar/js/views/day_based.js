@@ -646,34 +646,30 @@ Calendar.ns('Views').DayBased = (function() {
       return scrollTop;
     },
 
-    setScrollTop: function(scrollTop, animated) {
+    setScrollTop: function(scrollTop) {
       var scroll = this.element.querySelectorAll('.day-events-wrapper')[0];
-      if (animated) {
-        this._animatedScroll(scroll, scrollTop);
-      } else {
-        scroll.scrollTop = scrollTop;
-      }
+      scroll.scrollTop = scrollTop;
     },
 
     /**
      * Animated scroll to the destination scrollTop for am element.
      *
-     * @param {Object} element the element we would like to scroll.
      * @param {Number} destinationScrollTop the scrollTop of destination.
      */
-    _animatedScroll: function(element, destinationScrollTop) {
+    animatedScroll: function(scrollTop) {
+      var scroll = this.element.querySelectorAll('.day-events-wrapper')[0];
       var SCROLL_INTERVAL = 16;
       var timeCounter = 0;
       var progress = 0;
-      var startScrollTop = element.scrollTop;
-      var distance = destinationScrollTop - startScrollTop;
+      var startScrollTop = scroll.scrollTop;
+      var distance = scrollTop - startScrollTop;
 
       var timerId = setInterval(function() {
-        var scrollTop = element.scrollTop;
-        var maxScrollTop = element.scrollHeight - element.clientHeight;
-        if (scrollTop === destinationScrollTop ||
-            (scrollTop === maxScrollTop && distance > 0) ||
-            (scrollTop === 0 && distance < 0)
+        var currentScrollTop = scroll.scrollTop;
+        var maxScrollTop = scroll.scrollHeight - scroll.clientHeight;
+        if (currentScrollTop === scrollTop ||
+            (currentScrollTop === maxScrollTop && distance > 0) ||
+            (currentScrollTop === 0 && distance < 0)
           ) {
           clearInterval(timerId);
           return;
@@ -683,7 +679,7 @@ Calendar.ns('Views').DayBased = (function() {
         progress = timeCounter / Math.abs(distance);
         progress = progress > 1 ? 1 : progress;
 
-        element.scrollTop =
+        scroll.scrollTop =
           startScrollTop + distance * progress;
       }, SCROLL_INTERVAL);
     }
