@@ -229,4 +229,66 @@ suiteGroup('Views.Day', function() {
   test('#onfirstseen', function() {
     assert.equal(subject.onfirstseen, subject.render);
   });
+
+  suite('#_getScrollToHour', function() {
+    var clock;
+
+    setup(function() {
+      clock = sinon.useFakeTimers(+(new Date(2014, 8, 5, 13, 11)));
+    });
+
+    teardown(function() {
+      clock.restore();
+    });
+
+    test('today', function() {
+      var date = new Date(2014, 8, 5, 13, 11);
+      var hour = subject._getScrollToHour(date);
+      assert.equal(hour, 12);
+    });
+
+    test('today midnight', function() {
+      clock = sinon.useFakeTimers(+(new Date(2014, 8, 5, 0, 11)));
+      var date = new Date(2014, 8, 5, 0, 11);
+      var hour = subject._getScrollToHour(date);
+      assert.equal(hour, 0);
+    });
+
+    test('today with the onlyToday param as true', function() {
+      var date = new Date(2014, 8, 5, 13, 11);
+      var hour = subject._getScrollToHour(date, { onlyToday: true });
+      assert.equal(hour, 12);
+    });
+
+    test('today with the onlyToday param as false', function() {
+      var date = new Date(2014, 8, 5, 13, 11);
+      var hour = subject._getScrollToHour(date, { onlyToday: false });
+      assert.equal(hour, 12);
+    });
+
+    test('next day', function() {
+      var date = new Date(2014, 8, 6, 13, 11);
+      var hour = subject._getScrollToHour(date);
+      assert.equal(hour, 8);
+    });
+
+    test('next day midnight', function() {
+      clock = sinon.useFakeTimers(+(new Date(2014, 8, 5, 0, 11)));
+      var date = new Date(2014, 8, 6, 13, 11);
+      var hour = subject._getScrollToHour(date);
+      assert.equal(hour, 8);
+    });
+
+    test('next day with the onlyToday param as true', function() {
+      var date = new Date(2014, 8, 6, 13, 11);
+      var hour = subject._getScrollToHour(date, { onlyToday: true });
+      assert.equal(hour, undefined);
+    });
+
+    test('next day with the onlyToday param as false', function() {
+      var date = new Date(2014, 8, 6, 13, 11);
+      var hour = subject._getScrollToHour(date, { onlyToday: false });
+      assert.equal(hour, 8);
+    });
+  });
 });
