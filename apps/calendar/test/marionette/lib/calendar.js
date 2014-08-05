@@ -113,10 +113,22 @@ Calendar.prototype = {
   },
 
   openDayView: function() {
-    this.client
+    var day = this.day;
+    var client = this.client;
+    client
       .findElement('#view-selector a[href="/day/"]')
       .click();
-    this.day.waitForDisplay();
+    day.waitForDisplay();
+
+    // Wait for the end of the animated scrolling.
+    var previousScrollTop;
+    client.waitFor(function() {
+      if (previousScrollTop === day.dayEventsWrapperScrollTop) {
+        return true;
+      }
+      previousScrollTop = day.dayEventsWrapperScrollTop;
+    });
+
     return this;
   },
 

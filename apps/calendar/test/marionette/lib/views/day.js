@@ -1,10 +1,12 @@
 'use strict';
 
-var View = require('./view'),
+var Marionette = require('marionette-client'),
+    View = require('./view'),
     DayEvent = require('./day_event');
 
 function Day() {
   View.apply(this, arguments);
+  this.actions = new Marionette.Actions(this.client);
 }
 module.exports = Day;
 
@@ -43,5 +45,15 @@ Day.prototype = {
 
   get allDay() {
     return this.activeDay.findElement('.hour-allday');
+  },
+
+  get dayEventsWrapper() {
+    return this.activeDay.findElement('.day-events-wrapper');
+  },
+
+  get dayEventsWrapperScrollTop() {
+    return this.dayEventsWrapper.scriptWith(function(el) {
+      return el.scrollTop;
+    });
   }
 };

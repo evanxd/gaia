@@ -6,6 +6,7 @@ var Calendar = require('./lib/calendar'),
 marionette('day view', function() {
   var app;
   var day;
+  var month;
   var client = marionette.client({
     prefs: {
       // we need to disable the keyboard to avoid intermittent failures on
@@ -22,6 +23,7 @@ marionette('day view', function() {
     app.launch({ hideSwipeHint: true });
     app.openDayView();
     day = app.day;
+    month = app.month;
     day.waitForDisplay();
   });
 
@@ -225,4 +227,78 @@ marionette('day view', function() {
     }
   });
 
+  suite('animated scrolling', function() {
+    test('the default today', function() {
+      assert.equal(
+        day.dayEventsWrapperScrollTop,
+        getDistinationScrollTop(new Date().getHours() - 1),
+        'scroll to the previous hour of current time'
+      );
+    });
+
+    test('select other day except today in the month', function() {
+      var today = new Date();
+      var selectedDay;
+
+      app.openMonthView();
+      if (today.getDate() === 1 && today.getDay() === 0) {
+        selectedDay = month.days[1];
+      } else {
+        selectedDay = month.days[0];
+      }
+      selectedDay.click();
+
+      app.openDayView();
+      assert.equal(
+        day.dayEventsWrapperScrollTop,
+        getDistinationScrollTop(8),
+        'scroll to the 8AM element'
+      );
+    });
+
+    test('swipe to the next day in day view', function() {
+      var previousScrollTop = day.dayEventsWrapperScrollTop;
+      // Go to next day.
+      app.swipeLeft();
+
+      assert.equal(
+        day.dayEventsWrapperScrollTop,
+        previousScrollTop,
+        'same scrollTop'
+      );
+    });
+
+    test('swipe to the previous day in day view', function() {
+      var previousScrollTop = day.dayEventsWrapperScrollTop;
+      // Go to previous day.
+      app.swipeRight();
+
+      assert.equal(
+        day.dayEventsWrapperScrollTop,
+        previousScrollTop,
+        'same scrollTop'
+      );
+    });
+
+    function getDistinationScrollTop(hour) {
+      var scrollHeight = day.dayEventsWrapper.scriptWith(function(el) {
+        return el.scrollHeight;
+      });
+      var clientHeight = day.dayEventsWrapper.scriptWith(function(el) {
+        return el.clientHeight;
+      });
+      var BOTTOM_SCROLL_TOP = scrollHeight - clientHeight;
+      var HEIGHT_OF_HOUR_ELEMENT = 50;
+      var scrollTop = 0;
+
+      if (hour >= 0 && hour <= 23) {
+        scrollTop = hour * HEIGHT_OF_HOUR_ELEMENT;
+        if (scrollTop > BOTTOM_SCROLL_TOP) {
+          scrollTop = BOTTOM_SCROLL_TOP;
+        }
+      }
+
+      return scrollTop;
+    }
+  });
 });
