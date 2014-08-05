@@ -44,8 +44,7 @@ Calendar.ns('Views').Day = (function() {
         case 'selectedDayChange':
           date = e.data[0];
           this.changeDate(date, {
-            scrollTop: this._dateToScroll(date, { onlyToday: true }),
-            animated: true
+            scrollToHour: this._dateToScroll(date, { onlyToday: true }),
           });
           break;
       }
@@ -70,8 +69,7 @@ Calendar.ns('Views').Day = (function() {
     render: function() {
       var date = this.app.timeController.day;
       this.changeDate(date, {
-        scrollTop: this._dateToScroll(date),
-        animated: true
+        scrollToHour: this._dateToScroll(date)
       });
     },
 
@@ -102,8 +100,7 @@ Calendar.ns('Views').Day = (function() {
       controller.moveToMostRecentDay();
       var date = controller.position;
       this.changeDate(date, {
-        scrollTop: this._dateToScroll(date),
-        animated: true
+        scrollToHour: this._dateToScroll(date)
       });
 
       if (!this.frames || !this.frames.length) {
@@ -115,25 +112,19 @@ Calendar.ns('Views').Day = (function() {
     _dateToScroll: function(date, options) {
       var now = new Date();
       var onlyToday = false;
-      var scrollTo;
+      var hour;
 
       if (options) {
         onlyToday = options.onlyToday || onlyToday;
       }
 
       if (Calendar.Calc.isSameDate(date, now)) {
-        scrollTo = this._getHourScrollTop(now.getHours() - 1);
+        hour = now.getHours() - 1;
       } else if (!onlyToday) {
-        scrollTo = this._getHourScrollTop(8);
+        hour = 8;
       }
 
-      return scrollTo;
-    },
-
-    _getHourScrollTop: function(hour) {
-      // 50 is the height of a hour element
-      // in the day-events-wrapper element.
-      return hour * 50;
+      return hour;
     }
   };
 

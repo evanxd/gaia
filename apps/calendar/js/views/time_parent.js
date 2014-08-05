@@ -184,8 +184,7 @@ Calendar.ns('Views').TimeParent = (function() {
      */
     changeDate: function(time, options) {
       var prevScrollTop = 0;
-      var animated = false;
-      var scrollTop;
+      var scrollToHour;
 
       // deactivate previous frame
       if (this.currentFrame) {
@@ -194,8 +193,7 @@ Calendar.ns('Views').TimeParent = (function() {
       }
 
       if (options) {
-        scrollTop = options.scrollTop;
-        animated = options.animated;
+        scrollToHour = options.scrollToHour;
       }
 
       // setup & find all ids
@@ -209,14 +207,12 @@ Calendar.ns('Views').TimeParent = (function() {
       // create & activate current frame
       var cur = this.currentFrame = this.addFrame(time);
       cur.activate();
+      cur.setScrollTop(prevScrollTop);
 
-      if (animated && scrollTop) {
-        cur.setScrollTop(prevScrollTop);
-        cur.animatedScroll(scrollTop);
-      } else if (scrollTop >= 0) {
-        cur.setScrollTop(scrollTop);
-      } else {
-        cur.setScrollTop(prevScrollTop);
+      if (scrollToHour) {
+        cur.animatedScroll(
+          this._getHourScrollTop(scrollToHour)
+        );
       }
 
       // add next frame
@@ -224,6 +220,18 @@ Calendar.ns('Views').TimeParent = (function() {
 
       // ensure we don't have too many extra frames.
       this._trimFrames();
+    },
+
+    _getHourScrollTop: function(hour) {
+      var dayEvents = this.currentFrame.element
+        .querySelector('.active > .day-events-wrapper');
+      var maxScrollTop = dayEvents.scrollHeight - dayEvents.clientHeight;
+      var scrollTop = dayEvents.querySelector('.hour-' + hour).offsetTop;
+
+      if (scrollTop > maxScrollTop) {
+        scrollTop = maxScrollTop;
+      }
+      return scrollTop;
     },
 
     /**
