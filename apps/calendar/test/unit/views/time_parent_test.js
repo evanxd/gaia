@@ -46,6 +46,10 @@ suiteGroup('Views.TimeParent', function() {
 
     setScrollTop: function(scrollTop) {
       this.scrollTop = scrollTop;
+    },
+
+    animatedScroll: function(scrollTop) {
+      this.scrollTop = scrollTop;
     }
   };
 
@@ -264,11 +268,11 @@ suiteGroup('Views.TimeParent', function() {
 
     suite('pass the options argument', function() {
       setup(function() {
-        sinon.stub(subject.currentFrame, 'setScrollTop');
+        sinon.stub(subject.currentFrame, 'animatedScroll');
       });
 
       teardown(function() {
-        subject.currentFrame.setScrollTop.restore();
+        subject.currentFrame.animatedScroll.restore();
       });
 
       test('do animated scrolling', function() {
@@ -276,9 +280,9 @@ suiteGroup('Views.TimeParent', function() {
           animated: true
         });
 
-        sinon.assert.calledWithExactly(
-          subject.currentFrame.setScrollTop,
-          0, true
+        assert.ok(
+          subject.currentFrame.animatedScroll.notCalled,
+          'never call'
         );
       });
 
@@ -290,8 +294,8 @@ suiteGroup('Views.TimeParent', function() {
         });
 
         sinon.assert.calledWithExactly(
-          subject.currentFrame.setScrollTop,
-          100, true
+          subject.currentFrame.animatedScroll,
+          100
         );
       });
 
@@ -302,9 +306,9 @@ suiteGroup('Views.TimeParent', function() {
           scrollTop: 100
         });
 
-        sinon.assert.calledWithExactly(
-          subject.currentFrame.setScrollTop,
-          100, false
+        assert.ok(
+          subject.currentFrame.animatedScroll.notCalled,
+          'never call'
         );
       });
 
@@ -315,9 +319,9 @@ suiteGroup('Views.TimeParent', function() {
           animated: false
         });
 
-        sinon.assert.calledWithExactly(
-          subject.currentFrame.setScrollTop,
-          100, false
+        assert.ok(
+          subject.currentFrame.animatedScroll.notCalled,
+          'never call'
         );
       });
     });
