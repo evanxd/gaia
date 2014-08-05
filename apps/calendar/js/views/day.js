@@ -32,7 +32,6 @@ Calendar.ns('Views').Day = (function() {
     },
 
     handleEvent: function(e) {
-      var date;
       Parent.prototype.handleEvent.apply(
         this, arguments
       );
@@ -42,7 +41,7 @@ Calendar.ns('Views').Day = (function() {
           this.app.timeController.selectedDay = this.app.timeController.day;
           /* falls through */
         case 'selectedDayChange':
-          date = e.data[0];
+          var date = e.data[0];
           this.changeDate(date, {
             scrollToHour: this._dateToScroll(date, { onlyToday: true }),
           });
