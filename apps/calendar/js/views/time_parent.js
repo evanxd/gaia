@@ -213,7 +213,7 @@ Calendar.ns('Views').TimeParent = (function() {
       if (animated && scrollTop) {
         cur.setScrollTop(prevScrollTop);
         cur.animatedScroll(scrollTop);
-      } else if (scrollTop) {
+      } else if (scrollTop >= 0) {
         cur.setScrollTop(scrollTop);
       } else {
         cur.setScrollTop(prevScrollTop);
