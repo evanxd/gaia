@@ -43,7 +43,7 @@ Calendar.ns('Views').Day = (function() {
         case 'selectedDayChange':
           var date = e.data[0];
           this.changeDate(date, {
-            scrollToHour: this._dateToScroll(date, { onlyToday: true }),
+            scrollToHour: this._getScrollToHour(date, { onlyToday: true }),
           });
           break;
       }
@@ -68,7 +68,7 @@ Calendar.ns('Views').Day = (function() {
     render: function() {
       var date = this.app.timeController.day;
       this.changeDate(date, {
-        scrollToHour: this._dateToScroll(date)
+        scrollToHour: this._getScrollToHour(date)
       });
     },
 
@@ -99,7 +99,7 @@ Calendar.ns('Views').Day = (function() {
       controller.moveToMostRecentDay();
       var date = controller.position;
       this.changeDate(date, {
-        scrollToHour: this._dateToScroll(date)
+        scrollToHour: this._getScrollToHour(date)
       });
 
       if (!this.frames || !this.frames.length) {
@@ -108,7 +108,7 @@ Calendar.ns('Views').Day = (function() {
       }
     },
 
-    _dateToScroll: function(date, options) {
+    _getScrollToHour: function(date, options) {
       var now = new Date();
       var onlyToday = false;
       var hour;
