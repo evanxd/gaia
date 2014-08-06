@@ -664,8 +664,8 @@ Calendar.ns('Views').DayBased = (function() {
       var seconds = Math.abs(scrollTo) / SPEED;
 
       setTimeout(function() {
-        content.style.marginTop = scrollTo + 'px';
-        content.style.transition = seconds + 's linear';
+        content.style.transform = 'translateY(' + scrollTo + 'px)';
+        content.style.transition = 'transform ' + seconds + 's linear';
       });
 
       content.addEventListener('transitionend', function setScrollTop() {
