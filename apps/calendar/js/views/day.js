@@ -110,17 +110,11 @@ Calendar.ns('Views').Day = (function() {
 
     _getScrollToHour: function(date, options) {
       var now = new Date();
-      var onlyToday = false;
       var hour;
 
-      if (options) {
-        onlyToday = options.onlyToday || onlyToday;
-      }
-
       if (Calendar.Calc.isSameDate(date, now)) {
-        hour = now.getHours() - 1;
-        hour = hour >= 0 ? hour : 0;
-      } else if (!onlyToday) {
+        hour = Math.max(now.getHours() - 1, 0);
+      } else if (!options || !options.onlyToday) {
         hour = 8;
       }
 

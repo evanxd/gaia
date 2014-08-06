@@ -192,9 +192,7 @@ Calendar.ns('Views').TimeParent = (function() {
         this.currentFrame.deactivate();
       }
 
-      if (options) {
-        scrollToHour = options.scrollToHour;
-      }
+      scrollToHour = options && options.scrollToHour;
 
       // setup & find all ids
       var next = this._nextTime(time);
@@ -209,7 +207,7 @@ Calendar.ns('Views').TimeParent = (function() {
       cur.activate();
       cur.setScrollTop(prevScrollTop);
 
-      if (typeof scrollToHour === 'number') {
+      if (scrollToHour != null) {
         cur.animatedScroll(
           this._getHourScrollTop(scrollToHour)
         );
@@ -228,9 +226,7 @@ Calendar.ns('Views').TimeParent = (function() {
       var maxScrollTop = dayEvents.scrollHeight - dayEvents.clientHeight;
       var scrollTop = dayEvents.querySelector('.hour-' + hour).offsetTop;
 
-      if (scrollTop > maxScrollTop) {
-        scrollTop = maxScrollTop;
-      }
+      scrollTop = Math.min(scrollTop, maxScrollTop);
       return scrollTop;
     },
 
