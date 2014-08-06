@@ -41,10 +41,7 @@ Calendar.ns('Views').Day = (function() {
           this.app.timeController.selectedDay = this.app.timeController.day;
           /* falls through */
         case 'selectedDayChange':
-          var date = e.data[0];
-          this.changeDate(date, {
-            scrollToHour: this._getScrollToHour(date, { onlyToday: true }),
-          });
+          this.changeDate(e.data[0], { onlyToday: true });
           break;
       }
     },
@@ -66,10 +63,9 @@ Calendar.ns('Views').Day = (function() {
     },
 
     render: function() {
-      var date = this.app.timeController.day;
-      this.changeDate(date, {
-        scrollToHour: this._getScrollToHour(date)
-      });
+      this.changeDate(
+        this.app.timeController.day
+      );
     },
 
     oninactive: function() {
@@ -97,10 +93,10 @@ Calendar.ns('Views').Day = (function() {
       controller.on('selectedDayChange', this);
 
       controller.moveToMostRecentDay();
-      var date = controller.position;
-      this.changeDate(date, {
-        scrollToHour: this._getScrollToHour(date)
-      });
+
+      // ensure we change the date, if this is already
+      // the selected date the cost here is very small.
+      this.changeDate(controller.position);
 
       if (!this.frames || !this.frames.length) {
         console.error('(Calendar: render error) no child frames');
@@ -108,17 +104,35 @@ Calendar.ns('Views').Day = (function() {
       }
     },
 
-    _getScrollToHour: function(date, options) {
+    changeDate: function(time, options) {
+      Parent.prototype.changeDate.call(this, time, options);
+      var scrollTop = this._getDestinationScrollTop(time, options);
+
+      if (scrollTop != null) {
+        this.currentFrame.animatedScroll(scrollTop);
+      }
+    },
+
+    _getDestinationScrollTop: function(time, options) {
       var now = new Date();
+      var dayEvents = this.currentFrame.element
+        .querySelector('.active > .day-events-wrapper');
+      var maxScrollTop = dayEvents.scrollHeight - dayEvents.clientHeight;
+      var scrollTop;
       var hour;
 
-      if (Calendar.Calc.isSameDate(date, now)) {
+      if (Calendar.Calc.isSameDate(time, now)) {
         hour = Math.max(now.getHours() - 1, 0);
       } else if (!options || !options.onlyToday) {
         hour = 8;
       }
 
-      return hour;
+      if (hour != null) {
+        scrollTop = dayEvents.querySelector('.hour-' + hour).offsetTop;
+        scrollTop = Math.min(scrollTop, maxScrollTop);
+      }
+
+      return scrollTop;
     }
   };
 

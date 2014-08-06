@@ -182,9 +182,8 @@ Calendar.ns('Views').TimeParent = (function() {
      *
      * @param {Date} time center point to activate.
      */
-    changeDate: function(time, options) {
+    changeDate: function(time) {
       var prevScrollTop = 0;
-      var scrollToHour;
 
       // deactivate previous frame
       if (this.currentFrame) {
@@ -192,12 +191,11 @@ Calendar.ns('Views').TimeParent = (function() {
         this.currentFrame.deactivate();
       }
 
-      scrollToHour = options && options.scrollToHour;
+      this.date = time;
 
       // setup & find all ids
       var next = this._nextTime(time);
       var prev = this._previousTime(time);
-      this.date = time;
 
       // add previous frame
       this.addFrame(prev);
@@ -207,27 +205,11 @@ Calendar.ns('Views').TimeParent = (function() {
       cur.activate();
       cur.setScrollTop(prevScrollTop);
 
-      if (scrollToHour != null) {
-        cur.animatedScroll(
-          this._getHourScrollTop(scrollToHour)
-        );
-      }
-
       // add next frame
       this.addFrame(next);
 
       // ensure we don't have too many extra frames.
       this._trimFrames();
-    },
-
-    _getHourScrollTop: function(hour) {
-      var dayEvents = this.currentFrame.element
-        .querySelector('.active > .day-events-wrapper');
-      var maxScrollTop = dayEvents.scrollHeight - dayEvents.clientHeight;
-      var scrollTop = dayEvents.querySelector('.hour-' + hour).offsetTop;
-
-      scrollTop = Math.min(scrollTop, maxScrollTop);
-      return scrollTop;
     },
 
     /**
