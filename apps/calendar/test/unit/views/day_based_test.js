@@ -863,28 +863,20 @@ suiteGroup('Views.DayBased', function() {
       dayEventsWrapper.scrollTop = 0;
       subject.animatedScroll(maxScrollTop);
 
-      poll(function() {
-        return dayEventsWrapper.scrollTop === maxScrollTop;
-      }, done);
+      setTimeout(function(done) {
+        assert.equal(dayEventsWrapper.scrollTop, maxScrollTop);
+        done();
+      }, 100);
     });
 
     test('scroll to top from bottom', function(done) {
       dayEventsWrapper.scrollTop = maxScrollTop;
       subject.animatedScroll(0);
 
-      poll(function() {
-        return dayEventsWrapper.scrollTop === 0;
-      }, done);
+      setTimeout(function(done) {
+        assert.equal(dayEventsWrapper.scrollTop, 0);
+        done();
+      }, 100);
     });
-
-    function poll(check, done) {
-      setTimeout(function() {
-        if (check()) {
-          done();
-        } else {
-          poll(check, done);
-        }
-      }, 10);
-    }
   });
 });
