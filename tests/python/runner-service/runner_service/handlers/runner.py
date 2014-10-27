@@ -54,6 +54,8 @@ class DesktopHandler(MozrunnerHandler):
         profile = Profile(profile=options.get('profile'))
         cmdargs = options.get('argv', [])
 
+        cmdargs.append('-jsconsole')
+
         if options.get('screen') and \
            hasattr(options.screen, 'width') and \
            hasattr(options.screen, 'height'):
