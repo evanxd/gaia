@@ -147,7 +147,7 @@
           'powersave.enabled': true
         });
         if (!this._powerSaveEnabledLock) {
-          this.showPowerSavingNotification();
+          setTimeout(this.showPowerSavingNotification, 5000);
           this._powerSaveEnabledLock = true;
         }
         return;
