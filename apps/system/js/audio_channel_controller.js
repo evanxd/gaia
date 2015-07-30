@@ -63,6 +63,8 @@
         // Then we don't need to do `channel.isActive()` here.
         channel.isActive().onsuccess = (evt) => {
           this._states.active = evt.target.result;
+          console.log('bug-1188744: statechanged: ' +
+            this.instanceID + ': ' + this._states.active);
           this.publish('statechanged');
         };
         break;
