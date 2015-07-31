@@ -202,6 +202,7 @@
       var promise = new Promise((resolve) => {
         var request = this._channel.setMuted(false);
         request.onsuccess = () => {
+          console.log('bug-1188754: ' + this.instanceID + ' is playing!');
           resolve();
         };
         request.onerror = () => {
