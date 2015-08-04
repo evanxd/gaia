@@ -9,7 +9,12 @@
    * We will use mozChromeEvent/mozContentEvent to communicate with shell.js
    * to use the actual mozbrowser iframe of the system app.
    */
-  var SystemWindow = function() {};
+  var SystemWindow = function() {
+    // Send the event later becuase of Bug 1167465.
+    setTimeout(() => {
+      this._sendContentEvent({ type: 'system-audiochannel-list' });
+    });
+  };
 
   SystemWindow.STATES = [
     'getAudioChannels'
@@ -36,7 +41,7 @@
     _start: function() {
       this.instanceID = 'systemAppID';
       this.audioChannels = new Map();
-    },    
+    },
 
     /**
      * Handle mozSystemWindowChromeEvent event.
@@ -46,14 +51,9 @@
     _handle_mozSystemWindowChromeEvent: function(evt) {
       var detail = evt.detail;
       switch (detail.type) {
-        // Send the event after system is first time painted
-        // becuase of Bug 1167465.
-        case 'system-first-paint':
-          // Get System app's audio channels.
-          this._sendContentEvent({ type: 'system-audiochannel-list' });
-          break;
-
         case 'system-audiochannel-list':
+          console.log('Bug 1167465: get audio channels: ' +
+            detail.audioChannels);
           detail.audioChannels.forEach((name) => {
             this.audioChannels.set(
               name, new AudioChannelController(this, { name: name })
