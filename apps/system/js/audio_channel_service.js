@@ -55,6 +55,8 @@
     _handle_audiochannelstatechanged: function(evt) {
       var audioChannel = evt.detail;
       this.debug('Audio channel state is ' + audioChannel.isActive());
+      console.log('bug-1191207: audiochannelstatechanged' +
+        audioChannel.instanceID + ': ' + audioChannel.isActive());
       this._manageAudioChannels(audioChannel);
     },
 

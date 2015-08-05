@@ -458,6 +458,7 @@
       } else if (this.taskManager && this.taskManager.isActive()) {
         return true;
       } else {
+        console.log('bug-1191207: go to homescreen');
         this.display();
         return false;
       }
