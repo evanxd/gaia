@@ -43,6 +43,7 @@ define(function() {
       newApnSetting.types.slice().forEach(function(type) {
         newApnSetting.types = [type];
         promises.push(
+          // Looks like bug is here.
           ApnSettingsManager.addApn(this._serviceId, newApnSetting));
       }, this);
       return Promise.all(promises);
