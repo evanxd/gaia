@@ -74,7 +74,7 @@ MockAudioContext.prototype.destination = null;
 MockAudioContext.prototype.sampleRate = 48000;
 MockAudioContext.prototype.currentTime = 0;
 MockAudioContext.prototype.listener = null;
-MockAudioContext.prototype.mozAudioChannelType = 'normal';
+MockAudioContext.prototype.mozAudioChannelType = 'system';
 
 MockAudioContext.prototype.onmozinterruptbegin = null;
 MockAudioContext.prototype.onmozinterruptend = null;
