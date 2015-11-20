@@ -11,7 +11,7 @@
       crowded: true,
       estimatedWaitTime: '25 minutes',
       dataset: {
-        url: 'http://www.philzcoffee.com'
+        url: 'https://goo.gl/EXEkLo'
       },
       label: 'Philz Coffee Sunnyvale'
     },
@@ -20,7 +20,7 @@
       distance: '10 minutes driving',
       crowded: false,
       dataset: {
-        url: 'http://www.philzcoffee.com'
+        url: 'https://goo.gl/PBKPV4'
       },
       label: 'Philz Coffee Cupertino'
     }
