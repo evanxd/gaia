@@ -4,6 +4,27 @@
   'use strict';
 
   var SOCKET_SERVER = 'http://10.247.33.252:3000';
+  var RESTAURANT_DATA = [
+    {
+      title: 'Philz Coffee Sunnyvale',
+      distance: '5 minutes driving',
+      crowded: true,
+      estimatedWaitTime: '25 minutes',
+      dataset: {
+        url: 'http://www.philzcoffee.com'
+      },
+      label: 'Philz Coffee Sunnyvale'
+    },
+    {
+      title: 'Philz Coffee Cupertino',
+      distance: '10 minutes driving',
+      crowded: false,
+      dataset: {
+        url: 'http://www.philzcoffee.com'
+      },
+      label: 'Philz Coffee Cupertino'
+    }
+  ];
 
   function WoTServices() {}
 
@@ -114,28 +135,7 @@
     search: function(filter) {
       this.socket.emit('restaurant-service', filter);
       // For offline demo.
-      var restaurantData = [
-        {
-          title: 'Philz Coffee Sunnyvale',
-          distance: '5 minutes driving',
-          crowded: true,
-          estimatedWaitTime: '25 minutes',
-          dataset: {
-            url: 'http://www.philzcoffee.com'
-          },
-          label: 'Philz Coffee Sunnyvale'
-        },
-        {
-          title: 'Philz Coffee Cupertino',
-          distance: '10 minutes driving',
-          crowded: false,
-          dataset: {
-            url: 'http://www.philzcoffee.com'
-          },
-          label: 'Philz Coffee Cupertino'
-        }
-      ];
-      restaurantData = restaurantData.filter(function(ele) {
+      var restaurantData = RESTAURANT_DATA.filter(function(ele) {
         return ele.title.toLowerCase().match(filter.toLowerCase()) ?
           true : false;
       });
