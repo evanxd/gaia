@@ -35,7 +35,9 @@
     "settings":{ "access": "readwrite" },
     "systemXHR":{},
     "contacts":{ "access": "readonly" },
-    "moz-extremely-unstable-and-will-change-webcomponents":{}
+    "moz-extremely-unstable-and-will-change-webcomponents":{},
+    "desktop-notification":{},
+    "attention":{}
   },
   "connections": {
     "search": {

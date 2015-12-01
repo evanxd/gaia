@@ -37,8 +37,17 @@
     name: 'WoTServices',
 
     click: function(e) {
-      var url = e.target.dataset.url;
-      url && Search.navigate(url);
+      // var url = e.target.dataset.url;
+      // url && Search.navigate(url);
+      var mozNotification = window.navigator.mozNotification;
+      var notification = mozNotification.createNotification(
+        'Philz Coffee Sunnyval', 'Ready to serve.'
+      );
+      notification.show();
+      notification.onclick = function() {
+        window.alert('Philz Coffee Sunnyval is ready to serve,' +
+          ' have a good time :)');
+      };
     },
 
     init: function() {
