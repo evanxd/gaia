@@ -3,7 +3,7 @@
 (function(exports) {
   'use strict';
 
-  var SOCKET_SERVER = 'http://10.247.34.92:3000';
+  var SOCKET_SERVER = 'http://10.247.33.252:3000';
   // var RESTAURANT_DATA = [
   //   {
   //     title: 'Philz Coffee Sunnyvale',
@@ -80,12 +80,15 @@
         var title = document.createElement('span');
         var meta = document.createElement('small');
         var crowded = document.createElement('small');
+        var icon = document.createElement('img');
+        var iconWrapper = document.createElement('div');
 
         result.classList.add('result');
         description.classList.add('description');
         title.classList.add('title');
         meta.classList.add('meta');
         crowded.classList.add('meta');
+        iconWrapper.classList.add('icon');
 
         for (var i in config.dataset) {
           result.dataset[i] = config.dataset[i];
@@ -114,6 +117,8 @@
             Sanitizer.escapeHTML`<span style="color: rgb(186,60,50)">
               Crowded - ${config.estimatedWaitTime}</span>
               to get your order`;
+          icon.src = 'style/images/icon_notify.png';
+          iconWrapper.appendChild(icon);
         } else {
           crowded.innerHTML = '<span style="color: rgb(124,182,163)">' +
             'No line - Ready to serve</span>';
@@ -127,6 +132,7 @@
         description.appendChild(meta);
         description.appendChild(crowded);
         result.appendChild(description);
+        result.appendChild(iconWrapper);
         frag.appendChild(result);
       }, this);
       return frag;
