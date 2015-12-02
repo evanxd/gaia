@@ -3,7 +3,7 @@
 (function(exports) {
   'use strict';
 
-  var SOCKET_SERVER = 'http://10.247.33.252:3000';
+  var SOCKET_SERVER = 'http://10.247.34.92:3000';
   // var RESTAURANT_DATA = [
   //   {
   //     title: 'Philz Coffee Sunnyvale',
@@ -46,10 +46,10 @@
       var name = e.target.dataset.name;
       if (this._notifications.has(name)) {
         this._notifications.delete(name, null);
-        icon.style.opacity = 1;
+        icon.style.opacity = 0.5;
       } else {
         this._notifications.set(name, null);
-        icon.style.opacity = 0.5;
+        icon.style.opacity = 1;
       }
     },
 
@@ -149,6 +149,7 @@
               Crowded - ${config.estimatedWaitTime}</span>
               to get your order`;
           icon.src = 'style/images/icon_notify.png';
+          icon.style.opacity = 0.5;
           iconWrapper.appendChild(icon);
           iconWrapper.style.position = 'absolute';
           iconWrapper.style.right = '0px';
