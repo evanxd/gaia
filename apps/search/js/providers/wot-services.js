@@ -71,8 +71,9 @@
             );
             notification.show();
             notification.onclick = function() {
-              window.alert(title + ' is ready to serve,' +
-                ' have a good time :)');
+              Search.navigate(ele.dataset.url);
+              // window.alert(title + ' is ready to serve,' +
+              //   ' have a good time :)');
             };
           }
         });
