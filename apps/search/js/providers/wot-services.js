@@ -149,6 +149,8 @@
               to get your order`;
           icon.src = 'style/images/icon_notify.png';
           iconWrapper.appendChild(icon);
+          iconWrapper.style.position = 'absolute';
+          iconWrapper.style.right = '0px';
         } else {
           crowded.innerHTML = '<span style="color: rgb(124,182,163)">' +
             'No line - Ready to serve</span>';
