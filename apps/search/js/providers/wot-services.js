@@ -41,8 +41,16 @@
     click: function(e) {
       // var url = e.target.dataset.url;
       // url && Search.navigate(url);
+      var container = e.target;
+      var icon = container.querySelector('.icon img');
       var name = e.target.dataset.name;
-      this._notifications.set(name, null);
+      if (this._notifications.has(name)) {
+        this._notifications.delete(name, null);
+        icon.style.opacity = 1;
+      } else {
+        this._notifications.set(name, null);
+        icon.style.opacity = 0.5;
+      }
     },
 
     init: function() {
