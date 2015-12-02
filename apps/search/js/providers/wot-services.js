@@ -36,26 +36,38 @@
 
     name: 'WoTServices',
 
+    _notifications: null,
+
     click: function(e) {
       // var url = e.target.dataset.url;
       // url && Search.navigate(url);
-      var mozNotification = window.navigator.mozNotification;
-      var notification = mozNotification.createNotification(
-        'Philz Coffee Sunnyval', 'Ready to serve.'
-      );
-      notification.show();
-      notification.onclick = function() {
-        window.alert('Philz Coffee Sunnyval is ready to serve,' +
-          ' have a good time :)');
-      };
+      var name = e.target.dataset.name;
+      this._notifications.set(name, null);
     },
 
     init: function() {
+      this._notifications = new Map();
       this.socket = io(SOCKET_SERVER);
       this.socket.on('restaurant-data', (data) => {
         this.clear();
         data = this._formatData(data);
         this.render(data);
+        // Check notifications.
+        data.forEach((ele) => {
+          var title = ele.title;
+          if (!ele.crowded && this._notifications.has(title)) {
+            this._notifications.delete(title);
+            var mozNotification = window.navigator.mozNotification;
+            var notification = mozNotification.createNotification(
+              title, 'Ready to serve.'
+            );
+            notification.show();
+            notification.onclick = function() {
+              window.alert(title + ' is ready to serve,' +
+                ' have a good time :)');
+            };
+          }
+        });
       });
 
       this.header = document.getElementById(this.name.toLowerCase() +
@@ -73,6 +85,7 @@
           crowded: ele.crowded,
           estimatedWaitTime: ele.estimatedWaitTime,
           dataset: {
+            name: ele.name,
             url: ele.url
           },
           label: ele.name
